@@ -79,8 +79,7 @@ def update():
                     g.api.image.update_meta(id=image.id, meta=meta)
                     pbar.update(1)
         else:
-            dataset = g.api.dataset.get_info_by_id(g.DATASET_ID)
-            for image in g.api.image.get_list(dataset.id):
+            for image in g.api.image.get_list(info.id):
                 g.api.image.update_meta(id=image.id, meta=meta)
                 pbar.update(1)
 

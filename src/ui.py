@@ -14,32 +14,26 @@ from supervisely.app.widgets import (
 progress_bar = Progress(show_percents=False)
 
 
-
 if g.DATASET_ID is not None:
     info = g.api.dataset.get_info_by_id(g.DATASET_ID)
-    # thumbnail = DatasetThumbnail(project_info, dataset_info=info, show_project_name=False)
+    thumbnail = ProjectThumbnail(g.api.project.get_info_by_id(g.PROJECT_ID))
     button_update = Button(text="Update single Dataset")
 else:
     info = g.api.project.get_info_by_id(g.PROJECT_ID)
     button_update = Button(text="Update all Datasets in Project")
+    thumbnail = ProjectThumbnail(info)
 
-project_info = g.api.dataset.get_info_by_id(g.PROJECT_ID)
-thumbnail = ProjectThumbnail(project_info)
+# project_info = g.api.dataset.get_info_by_id(g.PROJECT_ID)
+
 
 txt_url = Text("URL:")
-url = Input(
-    placeholder="input url", value=info.description
-)
+url = Input(placeholder="input url", value=info.description)
 
 txt_author = Text("Author:")
-author = Input(
-    placeholder="input author"
-)
+author = Input(placeholder="input author")
 
 txt_license = Text("License:")
-license = Input(
-    placeholder="input license"
-)
+license = Input(placeholder="input license")
 
 
 card_1 = Card(
@@ -54,13 +48,14 @@ card_1 = Card(
             license,
             button_update,
             progress_bar,
-            thumbnail
+            thumbnail,
         ]
     ),
 )
 
 progress_bar.hide()
 # thumbnail.hide()
+
 
 @button_update.click
 def update():
@@ -69,7 +64,7 @@ def update():
         "Author": author.get_value(),
         "License": license.get_value(),
     }
-    
+
     progress_bar.show()
     with progress_bar(total=info.images_count) as pbar:
         if g.DATASET_ID is None:
